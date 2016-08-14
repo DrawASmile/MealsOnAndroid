@@ -1,5 +1,7 @@
 package org.drawsmile.mealsonandroid;
 
+
+import android.location.Location;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
@@ -10,9 +12,12 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    protected Location mLastLocation;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,11 +41,36 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
+
+        // SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+        // long lat= prefs.getLong("lats", 0);
+        // long lng= prefs.getLong("lng", 0);
+        Bundle bundle = getIntent().getExtras();
+        double lat = bundle.getDouble("lat");
+        double lng = bundle.getDouble("lng");
+        //double latfinal = new Long(lat).doubleValue();
+        // double lngfinal = new Long(lng).doubleValue();
+        //   Log.v("lats",String.valueOf(latfinal));
+
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
+        LatLng sydney = new LatLng(lat, lng);
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 13));
+
+        mMap.addMarker(new MarkerOptions()
+                .title("Food")
+                .snippet("drawsmiles.")
+                .position(sydney));
+
+
+
     }
+
+
+
+
 }

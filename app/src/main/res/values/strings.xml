@@ -1,5 +1,24 @@
 <resources>
-    <string name="section_format">Hello World from section: %1$d</string>
     <string name="app_name">Meals on Android</string>
     <string name="title_activity_maps">Map</string>
+
+    <string name="label_nextlocation">Next Food Service</string>
+
+    <string name="btn_viewmap">View Map</string>
+
+    <string name="prompt_enterFirstName">First Name</string>
+    <string name="prompt_enterLastName">Last Name</string>
+    <string name="prompt_enterEmail">Email</string>
+
+    <string name="header_volunteer">Sign up to Volunteer</string>
+    <string name="header_contact">Contact Us</string>
+
+    <string name="btn_applyVolunteer">Sign Up</string>
+
+    <string name="contact_website">Website: </string>
+    <string name="contact_email">Email: </string>
+    <string name="contact_mailAddress">Mailing Address: </string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

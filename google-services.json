@@ -10,6 +10,68 @@
       "client_info": {
         "mobilesdk_app_id": "1:911728225506:android:a665b07b18fe74a0",
         "android_client_info": {
+          "package_name": "org.drawasmile.mealsonandroid"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "911728225506-u3pp4nlmqaplqohvnrug49l4sfqbuoq8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBNGwZekYe6eW8DMEkkjTtUkVqCvT9vs8M"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:911728225506:android:336c4ec18a3bc792",
+        "android_client_info": {
+          "package_name": "com.draw_a_smile.mealsonandroid"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "911728225506-u3pp4nlmqaplqohvnrug49l4sfqbuoq8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBNGwZekYe6eW8DMEkkjTtUkVqCvT9vs8M"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:911728225506:android:db5200d3aca1b7cd",
+        "android_client_info": {
           "package_name": "org.drawsmile.mealsonandroid"
         }
       },
