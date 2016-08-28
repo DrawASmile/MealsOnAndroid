@@ -44,7 +44,45 @@
         android:text="@string/btn_viewmap"
         android:id="@+id/ViewMap_btn"
         android:nestedScrollingEnabled="false"
+        android:layout_alignTop="@+id/button_checkIn"
+        android:layout_toLeftOf="@+id/button_checkIn"
+        android:layout_toStartOf="@+id/button_checkIn" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_checkin"
+        android:id="@+id/button_checkIn"
         android:layout_below="@+id/Time"
+        android:layout_toLeftOf="@+id/button_signIn"
+        android:layout_toStartOf="@+id/button_signIn"
+        android:nestedScrollingEnabled="false" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/label_loginstatus"
+        android:id="@+id/label_logInStatus"
+        android:layout_below="@+id/ViewMap_btn"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_signin"
+        android:id="@+id/button_signIn"
+        android:layout_above="@+id/label_logInStatus"
+        android:layout_toRightOf="@+id/label_logInStatus"
+        android:layout_toEndOf="@+id/label_logInStatus" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/label_checkinstatus"
+        android:id="@+id/label_checkInStatus"
+        android:layout_below="@+id/label_logInStatus"
         android:layout_centerHorizontal="true" />
 
 

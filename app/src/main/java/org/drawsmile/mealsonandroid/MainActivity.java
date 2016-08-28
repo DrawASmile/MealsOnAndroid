@@ -1,5 +1,6 @@
 package org.drawsmile.mealsonandroid;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
@@ -18,7 +19,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
+import android.widget.Toast;
 
 
 import com.firebase.client.DataSnapshot;
@@ -29,6 +30,10 @@ import com.firebase.client.ValueEventListener;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.*;
+
+
+
 
 
 public class MainActivity extends AppCompatActivity {
@@ -38,7 +43,14 @@ public class MainActivity extends AppCompatActivity {
     public Button Maps;
 
     public static boolean fragmentViewCreated = false;
+
+    public static boolean signedIn = false;
+    public static String uid = "";
+
     public static int curSection = 0;
+
+
+    public static Context conte = null;
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -69,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         Firebase.setAndroidContext(this);
+        conte = this;
 
 
     }
@@ -129,6 +142,8 @@ public class MainActivity extends AppCompatActivity {
         public TextView Fdate;
         public TextView Ftime;
         public Button FMaps;
+        public Button FSignInButton;
+        public Button FCheckInButton;
 
         public Button FvolSignUp;
         public EditText FvolFirstName;
@@ -192,6 +207,9 @@ public class MainActivity extends AppCompatActivity {
                 Ftime = (TextView) rootView.findViewById(R.id.Time);
                 FMaps = (Button) rootView.findViewById(R.id.ViewMap_btn);
 
+                FSignInButton = (Button) rootView.findViewById(R.id.button_signIn);
+                FCheckInButton = (Button) rootView.findViewById(R.id.button_checkIn);
+
                 SharedPreferences prefs = getActivity().getPreferences(MODE_PRIVATE);
                 String address = prefs.getString("address", "Address N/A");
                 String date = prefs.getString("date", "Date N/A");
@@ -200,6 +218,25 @@ public class MainActivity extends AppCompatActivity {
                 Faddress.setText(address);
                 Fdate.setText(date);
                 Ftime.setText(time);
+
+                FSignInButton.setOnClickListener(new android.view.View.OnClickListener() {
+                    @Override
+                    public void onClick(android.view.View view) {
+
+                        if(!signedIn)
+                        {
+                            Intent myIntent = new Intent(conte, AuthenticationActivity.class);
+                            conte.startActivity(myIntent);
+                        }
+                        else
+                        {
+
+                        }
+
+
+
+                    }
+                });
 
                 FMaps.setOnClickListener(new android.view.View.OnClickListener() {
                     @Override
@@ -249,8 +286,12 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(android.view.View view) {
 
                         Log.i("drawsmiledebug", "Volunteer signup button pressed");
-                        //WRITE THE CODE FOR VOLUNTEERS TO SIGN UP HERE!
-                        //Bilal said that we only use their first and last name, no email or anything else required.
+                        String volunteerFirstName = FvolFirstName.getText().toString();  //string containing the volunteer's first name
+                        String volunteerLastName = FvolLastName.getText().toString();
+
+                        new SendEmailTask().execute(volunteerFirstName, volunteerLastName);
+
+                        Toast.makeText(getContext(), "Sent volunteer sign up email to bilal", Toast.LENGTH_LONG).show();
 
 
                     }
