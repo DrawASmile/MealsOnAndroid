@@ -1,11 +1,13 @@
 package org.drawsmile.mealsonandroid;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
 import android.location.Geocoder;
 
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -83,13 +85,35 @@ public class MainActivity extends AppCompatActivity {
         Firebase.setAndroidContext(this);
         conte = this;
 
+        loadLoginInfo(this); //warning: not sure if passing this counts as an activity.
+
 
     }
+
+
+    public void loadLoginInfo(Context co)
+    {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(co);
+        String fuid = prefs.getString("firebaseUID", "-");
+
+        if(fuid.equals("-"))
+        {
+            signedIn = false;
+        }
+        else
+        {
+            uid = fuid;
+            signedIn = true;
+            Toast.makeText(co, "Loaded saved login info", Toast.LENGTH_SHORT).show();
+        }
+}
 
     @Override
     public void onStart() {
         super.onStart();
         Firebase ref = new Firebase("https://draw-a-smile.firebaseio.com/");
+
+        loadLoginInfo(this);
 
         ref.addValueEventListener(new ValueEventListener() {
 
@@ -114,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-                SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
+                SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
                 editor.putString("address", Address);
                 editor.putString("date", Date);
                 editor.putString("time", Time);
@@ -148,6 +172,9 @@ public class MainActivity extends AppCompatActivity {
         public Button FvolSignUp;
         public EditText FvolFirstName;
         public EditText FvolLastName;
+
+        public TextView FLoginStatus;
+        public TextView FCheckinStatus;
 
         private static final String ARG_SECTION_NUMBER = "section_number";
 
@@ -210,7 +237,10 @@ public class MainActivity extends AppCompatActivity {
                 FSignInButton = (Button) rootView.findViewById(R.id.button_signIn);
                 FCheckInButton = (Button) rootView.findViewById(R.id.button_checkIn);
 
-                SharedPreferences prefs = getActivity().getPreferences(MODE_PRIVATE);
+                FLoginStatus = (TextView) rootView.findViewById(R.id.label_logInStatus);
+                FCheckinStatus = (TextView) rootView.findViewById(R.id.label_checkInStatus);
+
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
                 String address = prefs.getString("address", "Address N/A");
                 String date = prefs.getString("date", "Date N/A");
                 String time = prefs.getString("time", "Time N/A");
@@ -218,6 +248,17 @@ public class MainActivity extends AppCompatActivity {
                 Faddress.setText(address);
                 Fdate.setText(date);
                 Ftime.setText(time);
+
+                if(signedIn)
+                {
+                    FSignInButton.setText("Sign Out");
+                    FLoginStatus.setText("Logged In");
+                }
+                else
+                {
+                    FSignInButton.setText("Sign In");
+                    FLoginStatus.setText("Not Logged In");
+                }
 
                 FSignInButton.setOnClickListener(new android.view.View.OnClickListener() {
                     @Override
@@ -238,12 +279,30 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
+                FCheckInButton.setOnClickListener(new android.view.View.OnClickListener() {
+                    @Override
+                    public void onClick(android.view.View view) {
+
+                        if(!signedIn)
+                        {
+                            //Message: you must be logged in to check in for food service
+                        }
+                        else
+                        {
+                            //check in functionality
+                        }
+
+
+
+                    }
+                });
+
                 FMaps.setOnClickListener(new android.view.View.OnClickListener() {
                     @Override
                     public void onClick(android.view.View view) {
 
 
-                        SharedPreferences prefs = getActivity().getPreferences(MODE_PRIVATE);
+                        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
                         String address= prefs.getString("address", null);
                         Log.v("adddress",address);
 

@@ -1,6 +1,9 @@
 package org.drawsmile.mealsonandroid;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -36,6 +39,8 @@ public class AuthenticationActivity extends AppCompatActivity implements GoogleA
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
+    private Context conte;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +48,7 @@ public class AuthenticationActivity extends AppCompatActivity implements GoogleA
         setContentView(R.layout.activity_authentication);
 
         Firebase.setAndroidContext(this);
+        conte = this;
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken("911728225506-u3pp4nlmqaplqohvnrug49l4sfqbuoq8.apps.googleusercontent.com")
@@ -66,8 +72,21 @@ public class AuthenticationActivity extends AppCompatActivity implements GoogleA
                     Log.d("drawsmileauth", "onAuthStateChanged:signed_in:" + user.getUid());
                     MainActivity.signedIn = true;
                     MainActivity.uid = user.getUid();
+
+                    SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
+                    editor.putString("firebaseUID", user.getUid());
+                    editor.clear();
+                    editor.apply();
+
+
+                    //Reopen the main activity
+                    Intent myIntent = new Intent(conte, MainActivity.class);
+                    conte.startActivity(myIntent);
+
                 } else {
                     // User is signed out
+                    MainActivity.signedIn = false;
+                    MainActivity.uid = "";
                     Log.d("drawsmileauth", "onAuthStateChanged:signed_out");
                 }
 
