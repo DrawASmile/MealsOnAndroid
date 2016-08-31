@@ -96,6 +96,8 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(co);
         String fuid = prefs.getString("firebaseUID", "-");
 
+        Log.i("drawsmileauthdebug", fuid);
+
         if(fuid.equals("-"))
         {
             signedIn = false;
@@ -132,7 +134,8 @@ public class MainActivity extends AppCompatActivity {
 
                     Log.i("drawsmiledebug", "Setting text fields A: " + Address + ", D: " + Date + ", T: " + Time);
 
-                    page.setTextFields(Address, Date, Time);
+                    if(page != null)
+                        page.setTextFields(Address, Date, Time);
                 }
 
 
@@ -142,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
                 editor.putString("address", Address);
                 editor.putString("date", Date);
                 editor.putString("time", Time);
-                editor.clear();
+
                 editor.apply();
             }
 
@@ -271,7 +274,14 @@ public class MainActivity extends AppCompatActivity {
                         }
                         else
                         {
+                            signedIn = false;
+                            uid = "";
+                            FSignInButton.setText("Sign In");
+                            FLoginStatus.setText("Not Logged In");
+                            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(conte).edit();
+                            editor.putString("firebaseUID", "-");
 
+                            editor.apply();
                         }
 
 
@@ -285,7 +295,7 @@ public class MainActivity extends AppCompatActivity {
 
                         if(!signedIn)
                         {
-                            //Message: you must be logged in to check in for food service
+                            Toast.makeText(conte, "You must be signed in to check in", Toast.LENGTH_LONG).show();
                         }
                         else
                         {

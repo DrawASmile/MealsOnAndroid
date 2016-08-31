@@ -41,6 +41,8 @@ public class AuthenticationActivity extends AppCompatActivity implements GoogleA
 
     private Context conte;
 
+    private View currentView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +51,8 @@ public class AuthenticationActivity extends AppCompatActivity implements GoogleA
 
         Firebase.setAndroidContext(this);
         conte = this;
+
+        currentView = findViewById(android.R.id.content);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken("911728225506-u3pp4nlmqaplqohvnrug49l4sfqbuoq8.apps.googleusercontent.com")
@@ -75,7 +79,7 @@ public class AuthenticationActivity extends AppCompatActivity implements GoogleA
 
                     SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
                     editor.putString("firebaseUID", user.getUid());
-                    editor.clear();
+
                     editor.apply();
 
 
@@ -83,10 +87,12 @@ public class AuthenticationActivity extends AppCompatActivity implements GoogleA
                     Intent myIntent = new Intent(conte, MainActivity.class);
                     conte.startActivity(myIntent);
 
+
+                    FirebaseAuth.getInstance().signOut();
                 } else {
-                    // User is signed out
+               /*     // User is signed out
                     MainActivity.signedIn = false;
-                    MainActivity.uid = "";
+                    MainActivity.uid = "";*/
                     Log.d("drawsmileauth", "onAuthStateChanged:signed_out");
                 }
 
@@ -113,8 +119,37 @@ public class AuthenticationActivity extends AppCompatActivity implements GoogleA
         }
     }
 
+    public void signInEmail(View view)
+    {
+        EditText email = (EditText) currentView.findViewById(R.id.field_email);
+        EditText password = (EditText) currentView.findViewById(R.id.field_password);
+
+        String emailStr = email.getText().toString();
+        String passStr = password.getText().toString();
+
+        mAuth.signInWithEmailAndPassword(emailStr, passStr)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        Log.d("drawsmileauth", "signInWithEmail:onComplete:" + task.isSuccessful());
+
+                        // If sign in fails, display a message to the user. If sign in succeeds
+                        // the auth state listener will be notified and logic to handle the
+                        // signed in user can be handled in the listener.
+                        if (!task.isSuccessful()) {
+                            Log.w("drawsmileauth", "signInWithEmail:failed", task.getException());
+                            Toast.makeText(AuthenticationActivity.this, "Login failed!",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+
+
+                    }
+                });
+
+    }
+
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-        Log.d("drawsmileauth", "firebaseAuthWithGoogle:" + acct.getId());
+//        Log.d("drawsmileauth", "firebaseAuthWithGoogle:" + acct.getId());
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
@@ -164,6 +199,15 @@ public class AuthenticationActivity extends AppCompatActivity implements GoogleA
             handleSignInResult(result);
 
             GoogleSignInAccount account = result.getSignInAccount();
+            if(account == null)
+            {
+                sayToast("GoogleSignInAccount is null");
+                return;
+            }
+            else
+            {
+                sayToast("Attempting authentication with google");
+            }
             firebaseAuthWithGoogle(account);
         }
     }
@@ -195,8 +239,8 @@ public class AuthenticationActivity extends AppCompatActivity implements GoogleA
 
     public void registerEmail(View view)
     {
-        EditText email = (EditText) view.findViewById(R.id.field_email);
-        EditText password = (EditText) view.findViewById(R.id.field_password);
+        EditText email = (EditText) currentView.findViewById(R.id.field_email);
+        EditText password = (EditText) currentView.findViewById(R.id.field_password);
 
         String emailText = email.getText().toString().trim();
         emailText.replace(" ", "");
@@ -216,27 +260,25 @@ public class AuthenticationActivity extends AppCompatActivity implements GoogleA
             return;
         }
 
-        Firebase ref = new Firebase("https://draw-a-smile.firebaseio.com");
-        ref.createUser(emailText, passwordText, new Firebase.ValueResultHandler<Map<String, Object>>() {
-            @Override
-            public void onSuccess(Map<String, Object> result) {
-                sayToast("Account created, you can now login");
-            }
-            @Override
-            public void onError(FirebaseError firebaseError) {
-                sayToast("Error creating user account.");
-            }
-        });
+        mAuth.createUserWithEmailAndPassword(emailText, passwordText)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        Log.d("drawsmileauth", "createUserWithEmail:onComplete:" + task.isSuccessful());
 
+                        // If sign in fails, display a message to the user. If sign in succeeds
+                        // the auth state listener will be notified and logic to handle the
+                        // signed in user can be handled in the listener.
+                        if (!task.isSuccessful()) {
+                            Toast.makeText(AuthenticationActivity.this, "Authentication failed!",
+                                    Toast.LENGTH_SHORT).show();
+                        }
 
-
-
+                    }
+                });
 
 
     }
 
-    public void registerGoogle(View view)
-    {
 
-    }
 }

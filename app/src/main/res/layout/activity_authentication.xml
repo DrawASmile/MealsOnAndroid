@@ -59,7 +59,8 @@
         android:layout_marginTop="110dp"
         android:layout_below="@+id/field_password"
         android:layout_alignRight="@+id/textView14"
-        android:layout_alignEnd="@+id/textView14" />
+        android:layout_alignEnd="@+id/textView14"
+        android:onClick="signInEmail" />
 
     <Button
         android:layout_width="wrap_content"
