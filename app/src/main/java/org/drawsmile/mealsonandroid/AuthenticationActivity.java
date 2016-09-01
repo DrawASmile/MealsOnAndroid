@@ -185,6 +185,7 @@ public class AuthenticationActivity extends AppCompatActivity implements GoogleA
     }
 
     private void signIn() {
+        mGoogleApiClient.clearDefaultAccountAndReconnect();
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
@@ -249,12 +250,12 @@ public class AuthenticationActivity extends AppCompatActivity implements GoogleA
 
 
 
-        if(emailText == "" || !emailText.contains("@") || !emailText.contains("."))
+        if(emailText.equals("") || !emailText.contains("@") || !emailText.contains("."))
         {
             sayToast("Invalid email entered");
             return;
         }
-        if(passwordText == "")
+        if(passwordText.equals(""))
         {
             sayToast("Invalid password entered");
             return;

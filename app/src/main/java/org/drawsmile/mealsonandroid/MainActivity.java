@@ -47,7 +47,9 @@ public class MainActivity extends AppCompatActivity {
     public static boolean fragmentViewCreated = false;
 
     public static boolean signedIn = false;
-    public static String uid = "";
+    public static boolean checkedIn = false;
+
+    public static String uid = "-";
 
     public static int curSection = 0;
 
@@ -95,6 +97,16 @@ public class MainActivity extends AppCompatActivity {
     {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(co);
         String fuid = prefs.getString("firebaseUID", "-");
+        String checkInStatus = prefs.getString("checkedIn", "false");
+
+        if(checkInStatus.equals("true"))
+        {
+            checkedIn = true;
+        }
+        else
+        {
+            checkedIn = false;
+        }
 
         Log.i("drawsmileauthdebug", fuid);
 
@@ -117,6 +129,8 @@ public class MainActivity extends AppCompatActivity {
 
         loadLoginInfo(this);
 
+
+
         ref.addValueEventListener(new ValueEventListener() {
 
 
@@ -126,6 +140,13 @@ public class MainActivity extends AppCompatActivity {
                 String Address = snapshot.child("Address").getValue(String.class);
                 String Date = snapshot.child("Date").getValue(String.class);
                 String Time = snapshot.child("Time").getValue(String.class);
+
+                if(uid != "-")
+                {
+                    checkedIn = snapshot.child("checkedInUsers").hasChild(uid);
+                }
+
+
 
                 if(curSection == 0)
                 {
@@ -145,6 +166,15 @@ public class MainActivity extends AppCompatActivity {
                 editor.putString("address", Address);
                 editor.putString("date", Date);
                 editor.putString("time", Time);
+
+                if(checkedIn)
+                {
+                    editor.putString("checkedIn", "true");
+                }
+                else
+                {
+                    editor.putString("checkedIn", "false");
+                }
 
                 editor.apply();
             }
@@ -263,6 +293,17 @@ public class MainActivity extends AppCompatActivity {
                     FLoginStatus.setText("Not Logged In");
                 }
 
+                if(checkedIn)
+                {
+                    FCheckInButton.setText("Check Out");
+                    FCheckinStatus.setText("Checked In");
+                }
+                else
+                {
+                    FCheckInButton.setText("Check In");
+                    FCheckinStatus.setText("Not Checked In");
+                }
+
                 FSignInButton.setOnClickListener(new android.view.View.OnClickListener() {
                     @Override
                     public void onClick(android.view.View view) {
@@ -299,9 +340,54 @@ public class MainActivity extends AppCompatActivity {
                         }
                         else
                         {
-                            //check in functionality
-                        }
+                            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                            String fuid = prefs.getString("firebaseUID", "-");
 
+                            if(fuid.equals("-"))
+                            {
+                                Toast.makeText(conte, "Can't load your user ID for check in/out", Toast.LENGTH_LONG).show();
+                            }
+                            else //uid loaded
+                            {
+                                if(!checkedIn) //not checked in so check them in
+                                {
+                                    Firebase ref = new Firebase("https://draw-a-smile.firebaseio.com/");
+                                    Firebase userRef = ref.child("checkedInUsers").child(fuid);
+
+                                    userRef.child("checkIn").setValue("true");
+
+                                    checkedIn = true;
+
+                                    SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(conte).edit();
+                                    editor.putString("checkedIn", "true");
+
+                                    editor.apply();
+
+                                    Toast.makeText(conte, "Checked in", Toast.LENGTH_LONG).show();
+                                    FCheckInButton.setText("Check Out");
+                                    FCheckinStatus.setText("Checked In");
+
+                                }
+                                else //checked in so check them out
+                                {
+                                    Firebase ref = new Firebase("https://draw-a-smile.firebaseio.com/");
+                                    ref.child("checkedInUsers").child(fuid).removeValue();
+
+                                    checkedIn = false;
+
+                                    SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(conte).edit();
+                                    editor.putString("checkedIn", "false");
+
+                                    editor.apply();
+
+                                    Toast.makeText(conte, "Checked out", Toast.LENGTH_LONG).show();
+                                    FCheckInButton.setText("Check In");
+                                    FCheckinStatus.setText("Not Checked In");
+
+                                }
+                            }
+
+                        }
 
 
                     }
