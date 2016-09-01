@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
                 String Date = snapshot.child("Date").getValue(String.class);
                 String Time = snapshot.child("Time").getValue(String.class);
 
-                if(uid != "-")
+                if(!uid.equals("-"))
                 {
                     checkedIn = snapshot.child("checkedInUsers").hasChild(uid);
                 }
