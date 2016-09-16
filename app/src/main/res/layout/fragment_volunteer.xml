@@ -12,9 +12,10 @@
         android:text="@string/prompt_enterFirstName"
         android:ems="10"
         android:id="@+id/field_firstName"
-        android:layout_marginTop="53dp"
         android:layout_below="@+id/textView2"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignLeft="@+id/field_LastName"
+        android:layout_alignStart="@+id/field_LastName"
+        android:layout_marginTop="20dp" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -23,19 +24,19 @@
         android:text="@string/prompt_enterLastName"
         android:ems="10"
         android:id="@+id/field_LastName"
-        android:layout_marginTop="37dp"
         android:layout_below="@+id/field_firstName"
-        android:layout_alignLeft="@+id/field_firstName"
-        android:layout_alignStart="@+id/field_firstName" />
+        android:layout_alignRight="@+id/button_volunteerSignup"
+        android:layout_alignEnd="@+id/button_volunteerSignup"
+        android:layout_marginTop="20dp" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/btn_applyVolunteer"
         android:id="@+id/button_volunteerSignup"
-        android:layout_below="@+id/field_LastName"
+        android:layout_below="@+id/field_phoneNumber"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp" />
+        android:layout_marginTop="20dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -45,5 +46,17 @@
         android:id="@+id/textView2"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="42dp" />
+        android:layout_marginTop="20dp" />
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPhonetic"
+        android:text="@string/prompt_enterPhoneNumber"
+        android:ems="10"
+        android:id="@+id/field_phoneNumber"
+        android:layout_below="@+id/field_LastName"
+        android:layout_alignLeft="@+id/field_LastName"
+        android:layout_alignStart="@+id/field_LastName"
+        android:layout_marginTop="20dp" />
 </RelativeLayout>

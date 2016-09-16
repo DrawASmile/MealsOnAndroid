@@ -23,11 +23,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.google.android.gms.ads.MobileAds;
 
 
 import java.io.IOException;
@@ -50,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
     public static boolean checkedIn = false;
 
     public static String uid = "-";
+    public static String phoneNumber = "-";
+    public static boolean phoneSignIn = false;
 
     public static int curSection = 0;
 
@@ -90,6 +95,13 @@ public class MainActivity extends AppCompatActivity {
         loadLoginInfo(this); //warning: not sure if passing this counts as an activity.
 
 
+        //ads stuff
+        MobileAds.initialize(getApplicationContext(), "ca-app-pub-3940256099942544~3347511713");
+
+        AdView mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
     }
 
 
@@ -98,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(co);
         String fuid = prefs.getString("firebaseUID", "-");
         String checkInStatus = prefs.getString("checkedIn", "false");
+        String phoneNum = prefs.getString("phoneNumber", "-");
 
         if(checkInStatus.equals("true"))
         {
@@ -106,6 +119,14 @@ public class MainActivity extends AppCompatActivity {
         else
         {
             checkedIn = false;
+        }
+
+        if(!phoneNum.equals("-"))
+        {
+            phoneNumber = phoneNum;
+            signedIn = true;
+            phoneSignIn = true;
+            Toast.makeText(co, "Loaded saved login info", Toast.LENGTH_SHORT).show();
         }
 
         Log.i("drawsmileauthdebug", fuid);
@@ -118,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
         {
             uid = fuid;
             signedIn = true;
+            phoneSignIn = false;
             Toast.makeText(co, "Loaded saved login info", Toast.LENGTH_SHORT).show();
         }
 }
@@ -205,6 +227,7 @@ public class MainActivity extends AppCompatActivity {
         public Button FvolSignUp;
         public EditText FvolFirstName;
         public EditText FvolLastName;
+        public EditText FvolPhoneNum;
 
         public TextView FLoginStatus;
         public TextView FCheckinStatus;
@@ -316,12 +339,13 @@ public class MainActivity extends AppCompatActivity {
                         else
                         {
                             signedIn = false;
+                            phoneSignIn = false;
                             uid = "";
                             FSignInButton.setText("Sign In");
                             FLoginStatus.setText("Not Logged In");
                             SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(conte).edit();
                             editor.putString("firebaseUID", "-");
-
+                            editor.putString("phoneNumber", "-");
                             editor.apply();
                         }
 
@@ -340,8 +364,18 @@ public class MainActivity extends AppCompatActivity {
                         }
                         else
                         {
+
                             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                            String fuid = prefs.getString("firebaseUID", "-");
+                            String fuid;
+                            if(phoneSignIn)
+                            {
+                                fuid = prefs.getString("phoneNumber", "-");
+                            }
+                            else
+                            {
+                                fuid = prefs.getString("firebaseUID", "-");
+                            }
+
 
                             if(fuid.equals("-"))
                             {
@@ -432,21 +466,32 @@ public class MainActivity extends AppCompatActivity {
                 FvolFirstName = (EditText) rootView.findViewById(R.id.field_firstName);    //the field to enter the volunteer's first name
                 FvolLastName = (EditText) rootView.findViewById(R.id.field_LastName);      //the field to enter the volunteer's last name
                 FvolSignUp = (Button) rootView.findViewById(R.id.button_volunteerSignup);  //the button to sign up the volunteer
+                FvolPhoneNum = (EditText) rootView.findViewById(R.id.field_phoneNumber);
 
-                String volunteerFirstName = FvolFirstName.getText().toString();  //string containing the volunteer's first name
+              /*  String volunteerFirstName = FvolFirstName.getText().toString();  //string containing the volunteer's first name
                 String volunteerLastName = FvolLastName.getText().toString();   //string containing the volunteer's last name
+
+                String volunteerPhoneNumber = FvolPhoneNum.getText().toString().replace("Phone Number (make blank if N/A)", "").trim(); */
+
 
                 FvolSignUp.setOnClickListener(new android.view.View.OnClickListener() {
                     @Override
                     public void onClick(android.view.View view) {
 
                         Log.i("drawsmiledebug", "Volunteer signup button pressed");
-                        String volunteerFirstName = FvolFirstName.getText().toString();  //string containing the volunteer's first name
-                        String volunteerLastName = FvolLastName.getText().toString();
+                        String volunteerFirstName = FvolFirstName.getText().toString().trim();  //string containing the volunteer's first name
+                        String volunteerLastName = FvolLastName.getText().toString().trim();
+
+                        String volunteerPhoneNumber = FvolPhoneNum.getText().toString().replace("Phone Number (make blank if N/A)", "").trim();
+                        Firebase ref = new Firebase("https://draw-a-smile.firebaseio.com/");
+                        Firebase userRef = ref.child(volunteerFirstName).child(volunteerFirstName + "-" + volunteerLastName);
+
+                        userRef.child("name").setValue(volunteerFirstName + " " + volunteerLastName);
+                        userRef.child("phone").setValue(volunteerPhoneNumber);
 
                         new SendEmailTask().execute(volunteerFirstName, volunteerLastName);
 
-                        Toast.makeText(getContext(), "Sent volunteer sign up email to bilal", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), "Signed up to volunteer", Toast.LENGTH_LONG).show();
 
 
                     }

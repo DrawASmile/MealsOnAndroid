@@ -119,6 +119,19 @@ public class AuthenticationActivity extends AppCompatActivity implements GoogleA
         }
     }
 
+    public void signInPhone(View view)
+    {
+        EditText phone = (EditText) currentView.findViewById(R.id.field_phoneNumberE);
+
+        String phoneStr = phone.getText().toString().trim().replace(" ", "").replace("-", "");
+
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
+        editor.putString("phoneNumber", phoneStr);
+
+        editor.apply();
+
+    }
+
     public void signInEmail(View view)
     {
         EditText email = (EditText) currentView.findViewById(R.id.field_email);

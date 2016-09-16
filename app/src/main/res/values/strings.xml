@@ -9,10 +9,14 @@
     <string name="btn_viewmap">View Map</string>
     <string name="btn_checkin">Check In</string>
     <string name="btn_signin">Sign In</string>
+    <string name="btn_signinE">Sign In with Email</string>
+    <string name="btn_signInPhone">Use Phone #</string>
 
     <string name="prompt_enterFirstName">First Name</string>
     <string name="prompt_enterLastName">Last Name</string>
     <string name="prompt_enterEmail">Email</string>
+    <string name="prompt_enterPhoneNumber">Phone Number (make blank if N/A)</string>
+    <string name="prompt_enterPhoneNumberE">Phone Number</string>
 
     <string name="header_volunteer">Sign up to Volunteer</string>
     <string name="header_contact">Contact Us</string>
@@ -22,12 +26,17 @@
     <string name="contact_website">Website: </string>
     <string name="contact_email">Email: </string>
     <string name="contact_mailAddress">Mailing Address: </string>
-
+    <string name="contact_adinfo">We use ads to generate more funding for the organization. </string>
 
     <string name="auth_email">Email :</string>
     <string name="auth_password">Password: </string>
+    <string name="auth_phone">Or just use your phone number: </string>
     <string name="auth_registeremail">Register with Email</string>
     <string name="auth_registergoogle">Register with Google</string>
+
+
+
+    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
 
 
     <!-- TODO: Remove or change this placeholder text -->
