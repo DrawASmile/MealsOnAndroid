@@ -1,5 +1,6 @@
 package org.drawsmile.mealsonandroid;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -130,6 +131,9 @@ public class AuthenticationActivity extends AppCompatActivity implements GoogleA
 
         editor.apply();
 
+        //Reopen the main activity
+        Intent myIntent = new Intent(conte, MainActivity.class);
+        conte.startActivity(myIntent);
     }
 
     public void signInEmail(View view)

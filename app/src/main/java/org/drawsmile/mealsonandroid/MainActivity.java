@@ -23,6 +23,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
+
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
@@ -75,6 +77,23 @@ public class MainActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+    public static AdView adView;
+    public static AdRequest adRequest;
+
+    @Override
+    protected void onPause() {
+        if(adView != null)
+            adView.pause();
+
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(adView != null)
+           adView.resume();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,9 +117,14 @@ public class MainActivity extends AppCompatActivity {
         //ads stuff
         MobileAds.initialize(getApplicationContext(), "ca-app-pub-3940256099942544~3347511713");
 
-        AdView mAdView = (AdView) findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
+
+
+        adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR) //all emulators
+                .addTestDevice("428C355F90581AE85A4ACA36D9453119")  //My phone's device ID
+                .build();
+
+
 
     }
 
@@ -126,7 +150,9 @@ public class MainActivity extends AppCompatActivity {
             phoneNumber = phoneNum;
             signedIn = true;
             phoneSignIn = true;
+            Log.i("drawsmileauthdebug", "Phone number: " + phoneNum);
             Toast.makeText(co, "Loaded saved login info", Toast.LENGTH_SHORT).show();
+            return;
         }
 
         Log.i("drawsmileauthdebug", fuid);
@@ -134,6 +160,7 @@ public class MainActivity extends AppCompatActivity {
         if(fuid.equals("-"))
         {
             signedIn = false;
+            return;
         }
         else
         {
@@ -141,6 +168,7 @@ public class MainActivity extends AppCompatActivity {
             signedIn = true;
             phoneSignIn = false;
             Toast.makeText(co, "Loaded saved login info", Toast.LENGTH_SHORT).show();
+            return;
         }
 }
 
@@ -264,6 +292,7 @@ public class MainActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
 
+
             Log.i("drawsmiledebug", "ENTERED onCreateView");
             View rootView = null;
             switch(getArguments().getInt(ARG_SECTION_NUMBER))
@@ -278,6 +307,10 @@ public class MainActivity extends AppCompatActivity {
                     rootView = inflater.inflate(R.layout.fragment_contact, container, false);
                     break;
             }
+
+            adView = (AdView) rootView.findViewById(R.id.adView);
+
+            adView.loadAd(adRequest);
 
             Log.i("drawsmiledebug", "Section number: " + getArguments().getInt(ARG_SECTION_NUMBER));
             if(getArguments().getInt(ARG_SECTION_NUMBER) == 0)
@@ -483,15 +516,15 @@ public class MainActivity extends AppCompatActivity {
                         String volunteerLastName = FvolLastName.getText().toString().trim();
 
                         String volunteerPhoneNumber = FvolPhoneNum.getText().toString().replace("Phone Number (make blank if N/A)", "").trim();
-                        Firebase ref = new Firebase("https://draw-a-smile.firebaseio.com/");
-                        Firebase userRef = ref.child(volunteerFirstName).child(volunteerFirstName + "-" + volunteerLastName);
+                        Firebase ref = new Firebase("https://draw-a-smile.firebaseio.com/").child("volunteers");
+                        Firebase userRef = ref.child(volunteerFirstName + "-" + volunteerLastName);
 
                         userRef.child("name").setValue(volunteerFirstName + " " + volunteerLastName);
                         userRef.child("phone").setValue(volunteerPhoneNumber);
 
                         new SendEmailTask().execute(volunteerFirstName, volunteerLastName);
 
-                        Toast.makeText(getContext(), "Signed up to volunteer", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), "Signed up to volunteer", Toast.LENGTH_LONG).show();
 
 
                     }

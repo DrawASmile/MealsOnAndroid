@@ -11,6 +11,8 @@
     <string name="btn_signin">Sign In</string>
     <string name="btn_signinE">Sign In with Email</string>
     <string name="btn_signInPhone">Use Phone #</string>
+    <string name="prompt_signInwithGoogleInstead">Sign in with a Google account instead:
+    </string>
 
     <string name="prompt_enterFirstName">First Name</string>
     <string name="prompt_enterLastName">Last Name</string>
