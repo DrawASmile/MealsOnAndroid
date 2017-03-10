@@ -19,6 +19,8 @@
     <string name="prompt_enterEmail">Email</string>
     <string name="prompt_enterPhoneNumber">Phone Number (make blank if N/A)</string>
     <string name="prompt_enterPhoneNumberE">Phone Number</string>
+    <string name="prompt_emailAddress">Email Address</string>
+    <string name="prompt_password">Password</string>
 
     <string name="header_volunteer">Sign up to Volunteer</string>
     <string name="header_contact">Contact Us</string>
